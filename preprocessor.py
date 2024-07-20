@@ -5,8 +5,6 @@ def preprocess(data):
     pattern = r'\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}\s(?:AM|PM)\s-\s'
 
     messages = re.split(pattern, data)
-
-    # Find all dates in the data
     dates = re.findall(pattern, data)
 
     # Handle possible leading empty message if the first match was at the start
@@ -28,7 +26,6 @@ def preprocess(data):
 
     # Create DataFrame
     df = pd.DataFrame({'user_message': messages, 'message_date': dates})
-
     df['message_date'] = pd.to_datetime(df['message_date'], format='%m/%d/%y, %I:%M %p - ')
     df.rename(columns={'message_date': 'date'}, inplace=True)
 

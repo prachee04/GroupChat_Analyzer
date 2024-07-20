@@ -10,7 +10,6 @@ if uploaded_file is not None:
     bytes_data = uploaded_file.getvalue()
     data = bytes_data.decode("utf-8")
     df = preprocessor.preprocess(data)
-    st.dataframe(df)
 
     #+++++++++++++++++++++++++++++++++++++++=+++++ fetch unique users ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     user_list = df['user'].unique().tolist()
@@ -43,6 +42,24 @@ if uploaded_file is not None:
                 st.title(num_links)
         else:
             st.write("Error: No data returned from `fetch_stats`.")
+
+
+    #timeline
+        #monthly
+        st.title("Monthly Timeline")
+        timeline = helper.monthly_timeline(selected_user,df)
+        fig,ax = plt.subplots()
+        ax.plot(timeline['time'], timeline['message'],color='green')
+        plt.xticks(rotation='vertical')
+        st.pyplot(fig)
+
+        #daily
+        st.title("Daily Timeline")
+        daily_timeline = helper.daily_timeline(selected_user, df)
+        fig, ax = plt.subplots()
+        ax.plot(daily_timeline['only_date'], daily_timeline['message'], color='black')
+        plt.xticks(rotation='vertical')
+        st.pyplot(fig)
 
     #++++++++++++++++++++++++++++++++++++++++++++++++++ MOST BUSY USER +++++++++++++++++++++++++++++++++++++++++++++
         if selected_user == "Overall":
@@ -83,4 +100,16 @@ if uploaded_file is not None:
 
 
         #emojis analysis
-        
+        emoji_df = helper.emoji_helper(selected_user, df)
+        st.title("Emoji Analysis")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.dataframe(emoji_df)
+        with col2:
+            fig, ax = plt.subplots()
+            ax.pie(emoji_df[1].head(),labels=emoji_df[0].head(),autopct="%0.2f")
+            # ax.bar(emoji_df[0], emoji_df[1])
+            st.pyplot(fig)
+

@@ -10,6 +10,7 @@ Pandas
 Matplotlib
 Seaborn
 WordCloud
-extract
+
+Live deployed on this link: https://groupchatanalyzer-python.streamlit.app/
 
 

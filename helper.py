@@ -5,6 +5,7 @@ from wordcloud import WordCloud
 import pandas as pd 
 from collections import Counter
 import emoji
+
 def find_urls(text):
     url_pattern = re.compile(r'https?://\S+')
     return url_pattern.findall(text)
@@ -132,8 +133,7 @@ def month_activity_map(selected_user,df):
 
     return df['month'].value_counts()
 
-def activity_heatmap(selected_user,df):
-
+def activity_heatmap(selected_user, df):
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
 

@@ -23,12 +23,10 @@ def preprocess(data):
         print("There are more dates than messages. Extra dates will be removed.")
         dates = dates[:len(messages)]  # Trim the extra dates
 
-
     # Create DataFrame
     df = pd.DataFrame({'user_message': messages, 'message_date': dates})
     df['message_date'] = pd.to_datetime(df['message_date'], format='%m/%d/%y, %I:%M %p - ')
     df.rename(columns={'message_date': 'date'}, inplace=True)
-
 
     # Split user and message
     users = []
@@ -47,7 +45,6 @@ def preprocess(data):
     df['message'] = msgs
     df.drop(columns=['user_message'], inplace=True)
 
-
     df['only_date'] = df['date'].dt.date
     df['year'] = df['date'].dt.year
     df['month_num'] = df['date'].dt.month
@@ -56,5 +53,18 @@ def preprocess(data):
     df['day_name'] = df['date'].dt.day_name()
     df['hour'] = df['date'].dt.hour
     df['minute'] = df['date'].dt.minute
+
+    # Create period column
+    period = []
+    for hour in df['hour']:
+        if hour < 6:
+            period.append('Late Night')
+        elif hour < 12:
+            period.append('Morning')
+        elif hour < 18:
+            period.append('Afternoon')
+        else:
+            period.append('Evening')
+    df['period'] = period
 
     return df

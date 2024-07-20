@@ -15,7 +15,8 @@ if uploaded_file is not None:
 
     #+++++++++++++++++++++++++++++++++++++++=+++++ fetch unique users ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     user_list = df['user'].unique().tolist()
-    user_list.remove('group_notification')
+    if 'group_notification' in user_list:
+        user_list.remove('group_notification')
     user_list.sort()
     user_list.insert(0, "Overall")
 
@@ -47,23 +48,29 @@ if uploaded_file is not None:
 
 
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++ TIMELINE +++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        #monthly
-        st.title("Monthly Timeline")
-        timeline = helper.monthly_timeline(selected_user,df)
-        fig,ax = plt.subplots()
-        ax.plot(timeline['time'], timeline['message'],color='green')
-        plt.xticks(rotation='vertical')
-        st.pyplot(fig)
+        st.title("Timelines")
+        col1, col2 = st.columns(2)
 
-        #daily
-        st.title("Daily Timeline")
-        daily_timeline = helper.daily_timeline(selected_user, df)
-        fig, ax = plt.subplots()
-        ax.plot(daily_timeline['only_date'], daily_timeline['message'], color='black')
-        plt.xticks(rotation='vertical')
-        st.pyplot(fig)
+        with col1:
+            #monthly
+            st.header("Monthly Timeline")
+            timeline = helper.monthly_timeline(selected_user,df)
+            fig,ax = plt.subplots()
+            ax.plot(timeline['time'], timeline['message'],color='orange')
+            plt.xticks(rotation='vertical')
+            st.pyplot(fig)
 
-        # activity map
+        with col2:
+                    #daily
+            st.header("Daily Timeline")
+            daily_timeline = helper.daily_timeline(selected_user, df)
+            fig, ax = plt.subplots()
+            ax.plot(daily_timeline['only_date'], daily_timeline['message'], color='violet')
+            plt.xticks(rotation='vertical')
+            st.pyplot(fig)
+
+
+        #+++++++++++++++++++++++++++++++++++++++++++++++++++++++ ACTIVITY MAP ++++++++++++++++++++++++++++++++++++++++++++++++++++++
         st.title('Activity Map')
         col1,col2 = st.columns(2)
 
@@ -84,7 +91,7 @@ if uploaded_file is not None:
             st.pyplot(fig)
 
 
-    #++++++++++++++++++++++++++++++++++++++++++++++++++ MOST BUSY USER +++++++++++++++++++++++++++++++++++++++++++++
+    #+++++++++++++++++++++++++++++++++++++++++++++++++++++++ MOST BUSY USER ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         if selected_user == "Overall":
             st.title('Most Busy Users')
             x,new_df = helper.most_busy_users(df)
@@ -100,14 +107,14 @@ if uploaded_file is not None:
             with col2:
                 st.dataframe(new_df)
 
-        # st.title("Weekly Activity Map")
-        # user_heatmap = helper.activity_heatmap(selected_user,df)
-        # fig,ax = plt.subplots()
-        # ax = sns.heatmap(user_heatmap)
-        # st.pyplot(fig)
+        st.title("Weekly Activity Map")
+        user_heatmap = helper.activity_heatmap(selected_user,df)
+        fig,ax = plt.subplots()
+        ax = sns.heatmap(user_heatmap)
+        st.pyplot(fig)
 
 
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++++ MOST COMMON WORDS +++++++++++++++++++++++++++++++++++++++++
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++++ MOST COMMON WORDS +++++++++++++++++++++++++++++++++++++++++++++++
         most_common_df = helper.most_common_words(selected_user, df)
 
         fig, ax = plt.subplots()
